@@ -68,3 +68,21 @@ subplot(2,2,3), imagesc( sqrt(U_beanbags.^2 + V_beanbags.^2) ), axis off, title(
 subplot(2,2,4), imagesc( OFC_beanbags ), axis off, title('Late linearization, color codified flow')
 drawnow
 
+%----------
+% Segment -
+%----------
+disp('Segmenting...')
+%Load pre-calculated disparity maps
+load('disparity_maps')
+%Segment the dense disparity map
+[Ad Bd Cd] = DispSegmentation(Dd);
+
+%Segment the sparse disparity map
+[As Bs Cs] = DispSegmentationSparse(Ds);
+
+%And plot the results for the user
+figure
+subplot(2,2,1), imagesc( Dd ), title('Dense disparity map')
+subplot(2,2,2), imagesc( Ds ), title('Sparse disparity map')
+subplot(2,2,3), imagesc( Bd ), title('Segmentation (dense)')
+subplot(2,2,4), imagesc( Bs ), title('Segmentation (sparse)')
