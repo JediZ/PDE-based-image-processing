@@ -68,6 +68,31 @@ subplot(2,2,3), imagesc( sqrt(U_beanbags.^2 + V_beanbags.^2) ), axis off, title(
 subplot(2,2,4), imagesc( OFC_beanbags ), axis off, title('Late linearization, color codified flow')
 drawnow
 
+%------------
+%- Diffusion
+%------------
+disp('Non-linear diffusion')
+%Read the test images
+I1_dr = single( imread('c_tour_03_L_4980.jpg') )./255;
+I2_dr = single( imread('c_tour_03_L_4980_smooth.jpg') )./255;
+
+%Create starting mask
+[rows cols frames] = size(I1_dr);
+PHI = ones(rows,cols)*-1;
+PHI( 42:175, 115:217 ) = 1;
+
+%Develope the curves
+PHIa = GAC_v10a( I1_dr, PHI ); close all
+PHIb = GAC_v10b( I1_dr, PHI ); close all
+PHIc = GAC_v10a( I2_dr, PHI ); close all
+PHId = GAC_v10b( I2_dr, PHI ); close all
+
+%Display the results
+figure,imagesc(I1_dr), axis off, hold on, contour(PHIa>=0,'r-'), hold off, title('GAC v10a')
+figure,imagesc(I1_dr), axis off, hold on, contour(PHIb>=0,'r-'), hold off, title('GAC v10b')
+figure,imagesc(I2_dr), axis off, hold on, contour(PHIc>=0,'r-'), hold off, title('GAC v10a')
+figure,imagesc(I2_dr), axis off, hold on, contour(PHId>=0,'r-'), hold off, title('GAC v10b')
+
 %----------
 % Segment -
 %----------

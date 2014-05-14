@@ -130,8 +130,8 @@ void	AC_AOS_4_2d(	struct matrixM *PHI_out,
 			struct matrixM *GradNorm_in,	/*Derived from N = (nabla PHI)/|nabla PHI|*/
 			struct matrixM *Diff_in,	/*Diffusivity, inside DIV*/
 			float tau,			/*tau = delta t = time step*/
-			float nu, 			/*diffusivity coefficient*/
-			float Treinit);			/*t=0:0.25:Treinit...reinitialisation steps*/
+			float nu);/*, 			/*diffusivity coefficient*/
+/*TODO: Fix this!	float Treinit);*/			/*t=0:0.25:Treinit...reinitialisation steps*/
 
 /*
 //---------------------------------------------------------------------------------------

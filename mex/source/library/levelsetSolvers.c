@@ -148,8 +148,8 @@ void	AC_AOS_4_2d(	struct matrixM *PHI_out,
 			struct matrixM *GradNorm_in,	/*Derived from N = (nabla PHI)/|nabla PHI|*/
 			struct matrixM *Diff_in,	/*Diffusivity, inside DIV*/
 			float tau,			/*tau = delta t = time step*/
-			float nu, 			/*diffusivity coefficient*/
-			float Treinit)			/*t=0:0.25:Treinit...reinitialisation steps*/
+			float nu)/*,			/*diffusivity coefficient*/
+/*TODO: Fix this!	float Treinit)*/			/*t=0:0.25:Treinit...reinitialisation steps*/
 {
 	/*float *Cp, *Dp;		See below*/
 	float Cp[MAX_BUF_SIZE], Dp[MAX_BUF_SIZE];
@@ -175,7 +175,8 @@ void	AC_AOS_4_2d(	struct matrixM *PHI_out,
 	AC_TDMA_row4( PHI_out, PHI_in, D_in, GradNorm_in, Diff_in, tau, nu, Cp, Dp, ncols, nrows, nframes );
 	
 	/*Reinitialize back to a signed distance function*/
-	reinit( PHI_out, Treinit );
+	/*reinit( PHI_out, Treinit );*/
+	reinit( PHI_out, 0.25f );
 	
 }
 
@@ -896,7 +897,7 @@ omp_set_dynamic(1);
 		pos = k*rows*cols+j*rows; ppos = pos-1; npos = pos+1;
 		temp_result[0] = I[pos]*operator[0];
 		temp_result[1] = I[pos+1]*operator[1];
-		Result[pos] = temp_result[0]+temp_result[1];
+		Result[pos] = temp_result[0] + temp_result[1];
 
 		for(i=0;i<rows-2;i++)
 		{
@@ -904,14 +905,14 @@ omp_set_dynamic(1);
 			pos++; ppos++; npos++;
 			temp_result[0] = I[ppos]*operator[0];
 			temp_result[1] = I[npos]*operator[1];
-			Result[pos] = temp_result[0]+temp_result[1];
+			Result[pos] = temp_result[0] + temp_result[1];
 			
 		}
 		/*position, previous position and next position*/
 		pos++; ppos++; npos++;
 		temp_result[0] = I[ppos]*operator[0];
 		temp_result[1] = I[pos]*operator[1];
-		Result[pos] = temp_result[0]+temp_result[1];
+		Result[pos] = temp_result[0] + temp_result[1];
 	}
 	}
 }
@@ -1000,16 +1001,22 @@ void	reinit(	struct matrixM *PHI_inout,
 	if( (PHIy = (float*)calloc( elems, sizeof(float) ))==NULL )
 	{
 		printf("Error reserving space for 'PHIy'\n");
+		free(PHIx);
 		return;
 	}
 	if( (PHIxuw = (float*)calloc( elems, sizeof(float) ))==NULL )
 	{
 		printf("Error reserving space for 'PHIxuw'\n");
+		free(PHIx);
+		free(PHIy);
 		return;
 	}
 	if( (PHIyuw = (float*)calloc( elems, sizeof(float) ))==NULL )
 	{
 		printf("Error reserving space for 'PHIyuw'\n");
+		free(PHIx);
+		free(PHIy);
+		free(PHIxuw);
 		return;
 	}
 	if( (S = (float*)calloc( elems, sizeof(float) ))==NULL )
@@ -1044,16 +1051,22 @@ void	reinit(	struct matrixM *PHI_inout,
 	if( (PHIy = (float*)_mm_malloc( elems*sizeof(float), 16 ))==NULL )
 	{
 		printf("Error reserving space for 'PHIy'\n");
+		free(PHIx);
 		return;
 	}
 	if( (PHIxuw = (float*)_mm_malloc( elems*sizeof(float), 16 ))==NULL )
 	{
 		printf("Error reserving space for 'PHIxuw'\n");
+		free(PHIx);
+		free(PHIy);
 		return;
 	}
 	if( (PHIyuw = (float*)_mm_malloc( elems*sizeof(float), 16 ))==NULL )
 	{
 		printf("Error reserving space for 'PHIyuw'\n");
+		free(PHIx);
+		free(PHIy);
+		free(PHIxuw);
 		return;
 	}
 	if( (S = (float*)_mm_malloc( elems*sizeof(float), 16 ))==NULL )
@@ -1065,12 +1078,12 @@ void	reinit(	struct matrixM *PHI_inout,
 	/*Time step(s)*/
 	for(t=0.0f;t<T;t+=0.25f)
 	{
-		HorizontalConv(	PHIx, PHI_inout->data, operator, nrows, ncols, nframes);
-		VerticalConv( PHIy, PHI_inout->data, operator, nrows, ncols, nframes);
+		HorizontalConv(	PHIx, PHI_inout->data, operator, nrows, ncols, nframes );
+		VerticalConv( PHIy, PHI_inout->data, operator, nrows, ncols, nframes );
 
 		/*Implementation depends on if SSE and/or GASM is defined (in level_sets_c.h)...see the code below*/
-		blurredSignFunction( S, PHI_inout->data, PHIx, PHIy, nrows, ncols, nframes);
-		godunovUpwind( PHIxuw, PHIyuw, S, PHI_inout->data, nrows, ncols, nframes);
+		blurredSignFunction( S, PHI_inout->data, PHIx, PHIy, nrows, ncols, nframes );
+		godunovUpwind( PHIxuw, PHIyuw, S, PHI_inout->data, nrows, ncols, nframes );
 
 		for(i=0;i+3<elems;i+=4)
 		{
@@ -1392,85 +1405,3 @@ float InvSqrt (float x){
 	return x;
 }
 
-/* THIS SHOULD BE OBSOLETE!!!!
-//-------------------------------------
-//--- Calculate blurred sign function
-//-------------------------------------
-*/
-/*void blurredSignFunctionSSE(float *S, float *OM, float *PHIx, float *PHIy, unsigned int rows, unsigned int cols)
-{
-	unsigned int i, elems=rows*cols-1;
-	char mathStatus[512] __attribute__((aligned(16)));
-	float eps = FLT_EPSILON;
-
-	/*Store status of the FPU, MMX and SSE*/
-/*	__asm__ ( 	
-			"fxsave %0\n\t"
-			"finit\n\t"
-			"pxor %%xmm7, %%xmm7\n\t"	/*Sets XMM7 to zero...used later on for comparisons*/
-/*			:"=m"(mathStatus)
-		);
-	for(i=0;i<=elems;i++)
-	{
-		__asm (		
-				/*S[i] = OM[i]/sqrt( OM[i]*OM[i] + sqrt(PHIx[i]*PHIx[i]+PHIy[i]*PHIy[i]) );*/
-				/*Calculate pointers to OM[i]*/
-/*				"movl %[OM], 	%%eax\n\t"
-				"movl %[PHIx],	%%ecx\n\t"
-				"movl %[PHIy],	%%edx\n\t"
-				
-				"leal (%%eax,%[i],4),	%%eax\n\t"
-				"leal (%%ecx,%[i],4),	%%ecx\n\t"
-				"leal (%%edx,%[i],4),	%%edx\n\t"
-				
-				"movss (%%eax),	%%xmm0\n\t"	/*OM into xmm0*/
-/*				"movss %%xmm0,	%%xmm1\n\t"	/*xmm0 into xmm1*/
-/*				"movss (%%ecx),	%%xmm2\n\t"	/*PHIx into xmm2*/
-/*				"movss %%xmm2,	%%xmm3\n\t"	/*xmm2 into xmm3*/
-/*				"movss (%%edx),	%%xmm4\n\t"	/*PHIy into xmm4*/
-/*				"movss %%xmm4,	%%xmm5\n\t"	/*xmm4 into xmm5*/
-
-/*				"mulss %%xmm1, %%xmm0\n\t"	/*OM^2*/
-/*				"mulss %%xmm3, %%xmm2\n\t"	/*PHIx^2*/
-/*				"mulss %%xmm5, %%xmm4\n\t"	/*PHIy^2*/
-
-/*				"addss %%xmm4, %%xmm2\n\t"	/*PHIx^2+PHIy^2*/
-/*				"sqrtss %%xmm2,  %%xmm2\n\t"	/*sqrt(PHIx^2+PHIy^2)*/
-
-/*				"addss %%xmm2, %%xmm0\n\t"	/*OM^2+sqrt(PHIx^2+PHIy^2)*/
-/*				"comiss %%xmm0, %%Xmm7\n\t"	/*Compare if xmm0 is equivalent to xmm7 (containing 0)*/
-/*				"je zero\n\t"
-				"jmp notzero\n\t"
-
-				"zero:\n\t"
-					/*"pxor %%xmm0, %%xmm0\n\t"*/	/*Set xmm0 to 0*/
-/*					"movss (%%eax),	%%xmm0\n\t"	/*OM into xmm0*/
-/*					"jmp store\n\t"
-		
-				"notzero:\n\t"
-					"rsqrtss %%xmm0,%%xmm0\n\t"	/*1/sqrt( OM^2+sqrt(PHIx^2+PHIy^2) )*/
-/*					"mulss %%xmm1, %%xmm0\n\t"	/*OM/sqrt( OM^2+sqrt(PHIx^2+PHIy^2) )*/
-
-/*				"store:\n\t"
-					"movl %[S], 	%%eax\n\t"
-					"movss %%xmm0, (%%eax,%[i],4)\n\t"
-				
-			:
-			:	[OM]		"m"(OM),
-				[PHIx]		"m"(PHIx),
-				[PHIy]		"m"(PHIy),
-				[S]		"m"(S),
-				[i]		"r"(i),	
-				[EPS]		"m"(eps)
-			:"%eax","%ecx","%edx"
-			);
-	}
-
-	/*Return status of FPU, MMX and SSE*/
-/*	__asm__ ( 	
-			"fxrstor %0\n\t"
-			:"=m"(mathStatus)
-		);
-
-}
-*/
