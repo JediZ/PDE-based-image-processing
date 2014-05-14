@@ -24,6 +24,11 @@ There are several different functions for calculating stereo disparity maps with
 I have included two different functions for segmenting stereo disparity maps (sparse and dense maps) based on dynamic
 implicit surfaces, also known as level sets.
 
+2.4 GEOMETRIC ACTIVE CONTOUR CODE
+There are two different versions of geometric active contour:
+
+-Geometric active contour
+-Geodesic active contour
 
 3.0 DIRECTORIES
 Here is a brief explanation of the directory structure and what they contain. You can execute all the examples by running
@@ -62,6 +67,9 @@ Directory where all the compiled mex-functions are placed.
 
 3.3.2 DIRECTORY: source
 Source code for the mex-functions.
+
+4.0 KNOWN ISSUES
+MEX-codes using OpenMP, when compiled with certain versions of gcc, fail to execute properly (segmentation fault). I think the problem is related to stack size, but I have not confirmed this yet. 
 
 Cheers,
 Jarno
