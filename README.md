@@ -1,40 +1,50 @@
-1.0 INTRODUCTION
+#PDE Based Image Processing for Matlab
+
+##1 INTRODUCTION
 Matlab functions related to PDE based image processing including optical flow, disparity and segmentation.
 These functions were done as part of my phd thesis which explains, in details, how the models work, how these can be
 discretized and solved efficiently. The thesis is available from http://www.jarnoralli.fi, so if you want to
 understand how the models work, I suggest that you take a look there. I have also included tutorials and other
 material related to PDE based image processing at my site.
 
-2.0 ABOUT THE FUNCTIONS
+##2 ABOUT THE FUNCTIONS
 
-2.1 OPTICAL FLOW
+You can execute all the examples by running
+>runme.m
+
+###2.1 OPTICAL FLOW
 There are several different optical flow functions based on different mathematical formulas, for example:
 
--Horn&Schunck
--Late linearization with image warping
--Early linearization
+  1. Horn&Schunck
+  2. Late linearization with image warping
+  2. Early linearization (without image warping)
 
-2.2 STEREO DISPARITY
+###2.2 STEREO DISPARITY
 There are several different functions for calculating stereo disparity maps with different constraints, for example:
 
--Late linearization with image warping
--Symmetric flow
+  1. Late linearization with image warping
+  2. Symmetric flow
 
-2.3 SEGMENTATION BASED ON DYNAMIC IMPLICIT SURFACES
+###2.3 SEGMENTATION BASED ON DYNAMIC IMPLICIT SURFACES
 I have included two different functions for segmenting stereo disparity maps (sparse and dense maps) based on dynamic
 implicit surfaces, also known as level sets.
 
-2.4 GEOMETRIC ACTIVE CONTOUR CODE
+###2.4 GEOMETRIC ACTIVE CONTOUR CODE
 There are two different versions of geometric active contour:
 
--Geometric active contour
--Geodesic active contour
+  1. Geometric active contour
+  2. Geodesic active contour
 
-3.0 DIRECTORIES
-Here is a brief explanation of the directory structure and what they contain. You can execute all the examples by running
->runme.m
+###2.5 TOTAL VARIATION BASED IMAGE DENOISING
+There are two variants of image denoising based on total variation:
 
-3.1 DIRECTORY: images
+  1. Non-linear (4 neareast neighbours)
+  2. Anisotropic (8 nearest neighbours)
+
+##3 DIRECTORIES
+Here is a brief explanation of the directory structure and what they contain. 
+
+###3.1 images-directory
 Includes directories containing the test images. One of the directories is called 'middlebury'. In this directory you will find images available from:
 
 -http://vision.middlebury.edu/flow/
@@ -55,21 +65,21 @@ In IEEE Computer Society Conference on Computer Vision and Pattern Recognition (
 In IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR 2007), Minneapolis, MN, June 2007.
 ".
 
-3.2 DIRECTORY: matlab
+###3.2 matlab-directory
 This directory contains all the matlab functions.
 
-3.3 DIRECTORY: mex
+###3.3 mex-directory
 This directory contains all the mex-functions called by some of the Matlab-functions defined in the 'matlab'-directory. You can compile all the mex-functions by running:
 >buildAll.m
 
-3.3.1 DIRECTORY: build
+####3.3.1 build-directory
 Directory where all the compiled mex-functions are placed.
 
-3.3.2 DIRECTORY: source
+####3.3.2 source-directory
 Source code for the mex-functions.
 
-4.0 KNOWN ISSUES
-MEX-codes using OpenMP, when compiled with certain versions of gcc, fail to execute properly (segmentation fault). I think the problem is related to stack size, but I have not confirmed this yet. 
+##4 KNOWN ISSUES
+MEX-codes using OpenMP, when compiled with certain versions of gcc, fail to execute properly (segmentation fault). I think the problem is related to stack size, but I have not confirmed this yet. If you have problems using the functions, please do let me know.
 
 Cheers,
 Jarno

@@ -73,7 +73,7 @@ g = 1./( 1 + Igrad./param.lambda );
 gdx = imfilter( g, O_dx, 'replicate' );
 gdy = imfilter( g, O_dy, 'replicate' );
 
-figure
+fig = figure;
 iter = 0;
 
 while iter<param.ITER
@@ -111,3 +111,5 @@ while iter<param.ITER
 	iter = iter+1;
 
 end
+
+close(fig)

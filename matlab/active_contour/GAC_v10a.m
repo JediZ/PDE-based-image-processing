@@ -74,7 +74,7 @@ if param.lambda<0
 end
 g = 1./( 1 + Igrad./param.lambda );
 
-figure
+fig = figure;
 iter = 0;
 while iter<param.ITER
 
@@ -120,3 +120,4 @@ while iter<param.ITER
 	iter = iter+1;
 
 end
+close(fig)

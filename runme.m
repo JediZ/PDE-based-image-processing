@@ -68,10 +68,10 @@ subplot(2,2,3), imagesc( sqrt(U_beanbags.^2 + V_beanbags.^2) ), axis off, title(
 subplot(2,2,4), imagesc( OFC_beanbags ), axis off, title('Late linearization, color codified flow')
 drawnow
 
-%------------
-%- Diffusion
-%------------
-disp('Non-linear diffusion')
+%-------------------
+%- Active contours -
+%-------------------
+disp('Active contours')
 %Read the test images
 I1_dr = single( imread('c_tour_03_L_4980.jpg') )./255;
 I2_dr = single( imread('c_tour_03_L_4980_smooth.jpg') )./255;
@@ -82,20 +82,33 @@ PHI = ones(rows,cols)*-1;
 PHI( 42:175, 115:217 ) = 1;
 
 %Develope the curves
-PHIa = GAC_v10a( I1_dr, PHI ); close all
-PHIb = GAC_v10b( I1_dr, PHI ); close all
-PHIc = GAC_v10a( I2_dr, PHI ); close all
-PHId = GAC_v10b( I2_dr, PHI ); close all
+PHIa = GAC_v10a( I1_dr, PHI );
+PHIb = GAC_v10b( I1_dr, PHI );
+PHIc = GAC_v10a( I2_dr, PHI );
+PHId = GAC_v10b( I2_dr, PHI );
 
 %Display the results
-figure,imagesc(I1_dr), axis off, hold on, contour(PHIa>=0,'r-'), hold off, title('GAC v10a')
-figure,imagesc(I1_dr), axis off, hold on, contour(PHIb>=0,'r-'), hold off, title('GAC v10b')
-figure,imagesc(I2_dr), axis off, hold on, contour(PHIc>=0,'r-'), hold off, title('GAC v10a')
-figure,imagesc(I2_dr), axis off, hold on, contour(PHId>=0,'r-'), hold off, title('GAC v10b')
+figure
+subplot(2,2,1),imagesc(I1_dr), axis off, hold on, contour(PHIa>=0,'r-'), hold off, title('Model a, without pre-smoothing')
+subplot(2,2,2),imagesc(I1_dr), axis off, hold on, contour(PHIb>=0,'r-'), hold off, title('Model b, without pre-smoothing')
+subplot(2,2,3),imagesc(I2_dr), axis off, hold on, contour(PHIc>=0,'r-'), hold off, title('Model a, with pre-smoothing')
+subplot(2,2,4),imagesc(I2_dr), axis off, hold on, contour(PHId>=0,'r-'), hold off, title('Model b, with pre-smoothing')
 
-%----------
-% Segment -
-%----------
+%-------------------
+%- Image denoising -
+%-------------------
+disp('Denoising')
+I1_dr_denoised4 = TVdenoise4( I1_dr ); I1_dr_denoised4(I1_dr_denoised4>1.0) = 1.0; I1_dr_denoised4(I1_dr_denoised4<0.0) = 0.0;
+I1_dr_denoised8 = TVdenoise8( I1_dr ); I1_dr_denoised8(I1_dr_denoised8>1.0) = 1.0; I1_dr_denoised8(I1_dr_denoised8<0.0) = 0.0;
+
+figure
+subplot(2,2,1), imagesc( I1_dr ), axis off, title('Original image')
+subplot(2,2,3), imagesc( I1_dr_denoised4 ), axis off, title('Denoised, non-linear')
+subplot(2,2,4), imagesc( I1_dr_denoised8 ), axis off, title('Denoised, anisotropic')
+
+%---------------
+% Segmentation -
+%---------------
 disp('Segmenting...')
 %Load pre-calculated disparity maps
 load('disparity_maps')

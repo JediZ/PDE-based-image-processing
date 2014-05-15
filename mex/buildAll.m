@@ -18,6 +18,10 @@ mex -I./source/library ./source/SndDerivatives5.c ./source/library/imageDerivati
 %Compile image interpolation related functions
 mex -I./source/library ./source/BilinInterp_2d.c ./source/library/imageInterpolation.c -outdir ./build
 
+%Compile PDE solver related functions
+mex -I./source/library ./source/PDEsolver4.c ./source/library/pdeSolvers.c -outdir ./build
+mex -I./source/library ./source/PDEsolver8.c ./source/library/pdeSolvers.c -outdir ./build
+
 %Compile level-set related functions
 %Ransac is linked against blas and lapack (comes with Matlab)
 mex -largeArrayDims -I./source/library ./source/SurfaceEquation.c ./source/library/ransac.c -outdir ./build -lmwblas -lmwlapack
