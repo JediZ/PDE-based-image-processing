@@ -1064,6 +1064,7 @@ void GS_SOR_llin4_2d12(	struct matrixM *U,
 //---Uses inline assembler (AT&T syntax for Linux's GAS).
 //------------------------------------------------------
 */
+/*TODO: this should probably be removed completely*/
 void GS_SOR_llin4ASM_2d(	float *U,
 				float *dU,
 				float *Cu,
@@ -1077,6 +1078,7 @@ void GS_SOR_llin4ASM_2d(	float *U,
 				unsigned int iterations,
 				float omega)
 {
+
 		float wNeigh, A,B;
 		float *data_div, *dividend;
 		float *data_div_ptr, *dividend_ptr;
@@ -1361,7 +1363,7 @@ void GS_SOR_llin4ASM_2d(	float *U,
 			:"=m"(fstcw)
 		);
 #else
-  #warning "GS_SOR_llin4ASM_2d not compiled!"
+/*  #warning "GS_SOR_llin4ASM_2d not compiled!" */
 #endif
 		
 }
