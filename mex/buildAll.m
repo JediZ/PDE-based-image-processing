@@ -32,7 +32,7 @@ if isunix
 	mex CFLAGS="\$CFLAGS -fopenmp -msse" LDFLAGS="\$LDFLAGS -fopenmp -msse" -I./source/library ./source/Reinit.c ./source/library/levelsetSolvers.c -outdir ./build
 else
 	mex CFLAGS="$CFLAGS -fopenmp" LDFLAGS="$LDFLAGS -fopenmp" -I./source/library ./source/CV_solver_2d.c ./source/library/levelsetSolvers.c -outdir ./build
-	mex CFLAGS="$CFLAGS -fopenmp -msse" LDFLAGS="$LDFLAGS -fopenmp -msse" --I./source/library ./source/AC_solver_2d.c ./source/library/levelsetSolvers.c -outdir ./build
+	mex CFLAGS="$CFLAGS -fopenmp -msse" LDFLAGS="$LDFLAGS -fopenmp -msse" -I./source/library ./source/AC_solver_2d.c ./source/library/levelsetSolvers.c -outdir ./build
 	mex CFLAGS="$CFLAGS -fopenmp -msse" LDFLAGS="$LDFLAGS -fopenmp -msse" -I./source/library ./source/Reinit.c ./level_sets_c.c ./source/library/levelsetSolvers.c -outdir ./build
 end
 
