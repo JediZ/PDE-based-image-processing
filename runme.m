@@ -6,10 +6,14 @@ addpath( genpath('./mex/build') );
 disp('Compiling MEX-functions...')
 run('./mex/buildAll.m');
 
+%Might be a good idea to clear everything from memory before running the examples
+%clear all
+
 %------------
 %- Tsukuba -
 %------------
-disp('Processing Tsukuba...')
+disp('DISPARITY EXAMPLES')
+disp('Processing Tsukuba, late linearization with warping...')
 I_l_tsukuba = imread('tsukuba_left.png');
 I_r_tsukuba = imread('tsukuba_right.png');
 %Typical disparity
@@ -20,6 +24,7 @@ subplot(2,2,2), imagesc( I_r_tsukuba ), axis off, title('Tsukuba, right')
 subplot(2,2,3), imagesc( D_tsukuba ), axis off, title('Disparity')
 drawnow
 %Symmetric disparity
+disp('Processing Tsukuba, late linearization with warping imposing symmetry')
 D_tsukuba_sym = DispEminND_llin_sym_2D( I_l_tsukuba, I_r_tsukuba, 'grad', 'gradmag' );
 figure
 subplot(2,2,1), imagesc( I_l_tsukuba ), axis off, title('Tsukuba, left')
@@ -28,10 +33,11 @@ subplot(2,2,3), imagesc( D_tsukuba_sym(:,:,1) ), axis off, title('Symmetric disp
 subplot(2,2,3), imagesc( D_tsukuba_sym(:,:,2) ), axis off, title('Symmetric disparity 2')
 drawnow
 
-%---------
-% Urban3 -
-%---------
-disp('Processing Urban3...')
+%----------
+%- Urban3 -
+%----------
+disp('PROCESSING OPTICAL FLOW')
+disp('Processing Urban3, late linearization with warping...')
 I_7_urban3 = imread('Urban3_frame07.png');
 I_8_urban3 = imread('Urban3_frame08.png');
 %Optical flow, late linearization with warping
@@ -44,6 +50,7 @@ subplot(2,2,3), imagesc( sqrt(U_urban3.^2 + V_urban3.^2) ), axis off, title('Lat
 subplot(2,2,4), imagesc( OFC_urban3 ), axis off, title('Late linearization, color codified flow')
 drawnow
 %Horn&Schunck
+disp('Processing Urban3, Horn&Schunck...')
 [U_urban3_HS V_urban3_HS] = FlowEminHS_elin_2D_v10( cat(3,I_7_urban3,I_8_urban3), 3 );
 OFC_urban3_HS = flow2color( cat(3, U_urban3_HS, V_urban3_HS ), 'border', 10 );
 figure
@@ -54,9 +61,24 @@ subplot(2,2,4), imagesc( OFC_urban3_HS ), axis off, title('H&S, color codified f
 drawnow
 
 %------------
+%- Yosemite -
+%------------
+disp('Processing Yosemite, early linearization with full multigrid...')
+%Yosemite image and ground-truth have been preloaded to yosemite.mat
+Y = load('yosemite.mat');
+%Optical flow, early linearization with full multigrid scheme
+[U_yosemite_fmg V_yosemite_fmg] = FlowEminNDFASFMG_elin_2D_v10( Y.I, 1 );
+OFC_yosemite_fmg = flow2color( cat(3, U_yosemite_fmg, V_yosemite_fmg ), 'border', 10 );
+subplot(2,2,1), imagesc( uint8(Y.I(:,:,1)) ), axis off, title('Yosemite, t=0'), colormap(gray)
+subplot(2,2,2), imagesc( uint8(Y.I(:,:,2)) ), axis off, title('Yosemite, t=1'), colormap(gray)
+subplot(2,2,3), imagesc( sqrt(U_yosemite_fmg.^2 + V_yosemite_fmg.^2) ), axis off, title('Full multigrid, velocity')
+subplot(2,2,4), imagesc( OFC_yosemite_fmg ), axis off, title('Full multigrid, color codified flow')
+drawnow
+
+%------------
 %- Beanbags -
 %-------------
-disp('Processing Beanbags...')
+disp('Processing Beanbags, late linearization with warping...')
 I_10_beanbags = imread('beanbags_frame10.png');
 I_11_beanbags = imread('beanbags_frame11.png');
 [U_beanbags V_beanbags] = FlowEminND_llin_2D_v10( cat(3,I_10_beanbags,I_11_beanbags), 3, 'rgb', 'none' );
@@ -71,7 +93,7 @@ drawnow
 %-------------------
 %- Active contours -
 %-------------------
-disp('Active contours')
+disp('PROCESSING ACTIVE CONTOURS')
 %Read the test images
 I1_dr = single( imread('c_tour_03_L_4980.jpg') )./255;
 I2_dr = single( imread('c_tour_03_L_4980_smooth.jpg') )./255;
@@ -97,7 +119,7 @@ subplot(2,2,4),imagesc(I2_dr), axis off, hold on, contour(PHId>=0,'r-'), hold of
 %-------------------
 %- Image denoising -
 %-------------------
-disp('Denoising')
+disp('PROCESSING DENOISING')
 I1_dr_denoised4 = TVdenoise4( I1_dr ); I1_dr_denoised4(I1_dr_denoised4>1.0) = 1.0; I1_dr_denoised4(I1_dr_denoised4<0.0) = 0.0;
 I1_dr_denoised8 = TVdenoise8( I1_dr ); I1_dr_denoised8(I1_dr_denoised8>1.0) = 1.0; I1_dr_denoised8(I1_dr_denoised8<0.0) = 0.0;
 
@@ -109,7 +131,7 @@ subplot(2,2,4), imagesc( I1_dr_denoised8 ), axis off, title('Denoised, anisotrop
 %---------------
 % Segmentation -
 %---------------
-disp('Segmenting...')
+disp('PROCESSING SEGMENTATION')
 %Load pre-calculated disparity maps
 load('disparity_maps')
 %Segment the dense disparity map

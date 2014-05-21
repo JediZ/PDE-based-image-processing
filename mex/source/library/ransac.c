@@ -67,7 +67,9 @@ void RANSAC( struct matrixM *A_in,				/*Data to be fitted A_in * model_out = B_i
     /*Definitions etc.*/
     err_thr2 = err_thr*err_thr;
     data_length = A_in->dimElems[0];
-    abs_min_set_size = (unsigned int)round( min_set_size*(float)data_length );
+    /*TODO: round()-function is not necessarily included in math.h...seems it was included in C99. Nicer solution should be used!
+    abs_min_set_size = (unsigned int)round( min_set_size*(float)data_length );*/
+    abs_min_set_size = (unsigned int)( min_set_size*(float)data_length + 0.5f );
     
     /*Initialize storages*/
     model_storage = (struct matrixM*)malloc( 1*sizeof(struct matrixM) );

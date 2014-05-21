@@ -19,8 +19,8 @@ wE		=		Diffusion weight (east).
 wS		=		Diffusion weight (south).
 iter		=		Number of iterations.
 solver		=		Type of solver used:
-			      1 = Normal point-wise Gauss-Seidel relaxation.
-			      2 = Alternating line relaxation (ALR) - Block Gauss-Seidel.
+			      		1 = Normal point-wise Gauss-Seidel relaxation.
+			      		2 = Alternating line relaxation (ALR) - Block Gauss-Seidel.
 
 OUTPUT
 U_out		=		New estimation of U after 'iter' iterations.
