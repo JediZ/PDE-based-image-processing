@@ -88,7 +88,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* Check for proper number of arguments. */
 	if (nrhs != 6) {
-		mexErrMsgTxt("error: wrong number of input parameters!");
+		mexErrMsgTxt("SurfaceEquation error: wrong number of input parameters!");
 	} 
 	/*
 	//---------------
@@ -97,7 +97,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* A_in must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[0])){
-		mexErrMsgTxt("error: 'A_in' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("SurfaceEquation error: 'A_in' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	A_in.ndims = mxGetNumberOfDimensions(prhs[0]);
@@ -111,7 +111,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* B_in must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[1])){
-		mexErrMsgTxt("error: 'B_in' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("SurfaceEquation error: 'B_in' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	B_in.ndims = mxGetNumberOfDimensions(prhs[1]);
@@ -124,7 +124,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* M_in must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[2])){
-		mexErrMsgTxt("error: 'M_in' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("SurfaceEquation error: 'M_in' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	M_in.ndims = mxGetNumberOfDimensions(prhs[2]);
@@ -137,7 +137,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* err_thr must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[3])){
-		mexErrMsgTxt("error: 'err_thr' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("SurfaceEquation error: 'err_thr' must be a noncomplex, single-type scalar");
 	}
 	err_thr = *((float*)mxGetPr( prhs[3] ) );
 	/*
@@ -147,7 +147,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* min_set_size must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[4])){
-		mexErrMsgTxt("error: 'min_set_size' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("SurfaceEquation error: 'min_set_size' must be a noncomplex, single-type scalar");
 	}
 	min_set_size = *((float*)mxGetPr( prhs[4] ) );
 	/*
@@ -157,7 +157,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* min_set_size must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[5])){
-		mexErrMsgTxt("error: 'iter' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("SurfaceEquation error: 'iter' must be a noncomplex, single-type scalar");
 	}
 	iter = *((float*)mxGetPr( prhs[5] ) );
 
@@ -165,11 +165,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	if( M_in.data != NULL )
 	{
 	  if( A_in.dimElems[1] != M_in.dimElems[0] )
-	  {	mexErrMsgTxt("error: M_in is a column vector with as many row elements as A_in has columns!");
+	  {	mexErrMsgTxt("SurfaceEquation error: M_in is a column vector with as many row elements as A_in has columns!");
 	  }
 	}
 	if( A_in.dimElems[0] != B_in.dimElems[0] )
-	  mexErrMsgTxt("error: A_in and B_in have to have same amount of rows!");
+	  mexErrMsgTxt("SurfaceEquation error: A_in and B_in have to have same amount of rows!");
 
 	switch( A_in.dimElems[1] )
 	{
@@ -183,25 +183,25 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	  
 	  default:
 	      mexPrintf("A_in.dimElems[0]:%d, A_in.dimElems[1]:%d\n",A_in.dimElems[0], A_in.dimElems[1]);
-	      mexErrMsgTxt("error: only 1st and 2nd order polynomials are implemented!");
+	      mexErrMsgTxt("SurfaceEquation error: only 1st and 2nd order polynomials are implemented!");
 	}
 	
 	if( nlhs<2 )
 	{
-		mexErrMsgTxt("error: insufficient number of outputs. Outputs from this function is 'M_out' and 'error_out'");
+		mexErrMsgTxt("SurfaceEquation error: insufficient number of outputs. Outputs from this function is 'M_out' and 'error_out'");
 	}else{
 		if( (plhs[0] = mxCreateNumericArray(2, temp, mxSINGLE_CLASS, mxREAL))==NULL )
-		  mexErrMsgTxt("error: error reserving space for output variable 'M_out'");
+		  mexErrMsgTxt("SurfaceEquation error: error reserving space for output variable 'M_out'");
 		if( (M_out.data = (float *)mxGetPr( plhs[0] ))==NULL )
-		  mexErrMsgTxt("error: error obtaining pointer to output variable 'M_out'");
+		  mexErrMsgTxt("SurfaceEquation error: error obtaining pointer to output variable 'M_out'");
 		M_out.ndims = mxGetNumberOfDimensions(plhs[0]);
 		M_out.dimElems = mxGetDimensions(plhs[0]);
 		
 		temp[0] = A_in.dimElems[0];
 		if( (plhs[1] = mxCreateNumericArray(2, temp, mxSINGLE_CLASS, mxREAL))==NULL )
-		  mexErrMsgTxt("error: error reserving space for output variable 'M_out'");
+		  mexErrMsgTxt("SurfaceEquation error: error reserving space for output variable 'M_out'");
 		if( (error_out.data = (float *)mxGetPr( plhs[1] ))==NULL )
-		  mexErrMsgTxt("error: error obtaining pointer to output variable 'error_out'");
+		  mexErrMsgTxt("SurfaceEquation error: error obtaining pointer to output variable 'error_out'");
 		error_out.ndims = mxGetNumberOfDimensions(plhs[1]);
 		error_out.dimElems = mxGetDimensions(plhs[1]);
 	}
