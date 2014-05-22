@@ -92,7 +92,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* Check for proper number of arguments. */
 	if (nrhs != 11) {
-		mexErrMsgTxt("Dispsor_llin4_2d parameter error: wrong number of input parameters!");
+		mexErrMsgTxt("Disp_sor_llin4_2d parameter error: wrong number of input parameters!");
 	} 
 	/*
 	//------------
@@ -101,7 +101,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* U_in must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[0])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'U_in' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'U_in' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	U_in.ndims = mxGetNumberOfDimensions(prhs[0]);
@@ -114,7 +114,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* dU_in must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[1])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'dU_in' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'dU_in' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	dU_in.ndims = mxGetNumberOfDimensions(prhs[1]);
@@ -127,7 +127,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* Cu must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[2])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'Cu' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'Cu' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	Cu.ndims = mxGetNumberOfDimensions(prhs[2]);
@@ -140,7 +140,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* Du must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[3])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'Du' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'Du' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	Du.ndims = mxGetNumberOfDimensions(prhs[3]);
@@ -153,7 +153,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* wW must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[4])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'wW' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'wW' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	wW.ndims = mxGetNumberOfDimensions(prhs[4]);
@@ -166,7 +166,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* wN must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[5])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'wN' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'wN' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	wN.ndims = mxGetNumberOfDimensions(prhs[5]);
@@ -179,7 +179,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* wE must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[6])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'wE' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'wE' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	wE.ndims = mxGetNumberOfDimensions(prhs[6]);
@@ -192,7 +192,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* wS must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[7])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'wS' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'wS' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	wS.ndims = mxGetNumberOfDimensions(prhs[7]);
@@ -205,7 +205,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* iter must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[8])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'iter' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'iter' must be a noncomplex, single-type scalar");
 	}
 	Mparam.iter = *((float*)mxGetPr( prhs[8] ) );
 		/*
@@ -215,7 +215,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* iter must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[9])){
-		mexErrMsgTxt("Dispsor_llin4_2d error: 'omega' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("Disp_sor_llin4_2d error: 'omega' must be a noncomplex, single-type scalar");
 	}
 	Mparam.omega = *((float*)mxGetPr( prhs[9] ) );
 	/*
@@ -225,7 +225,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 	*/
 	/* iter must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[10])){
-		mexErrMsgTxt("Dispsor_elin_2d error: 'solver' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("Disp_sor_elin_2d error: 'solver' must be a noncomplex, single-type scalar");
 	}
 	solver = (int)*((float*)mxGetPr( prhs[10] ) );
 		
@@ -239,13 +239,13 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 
 		
 	if( nlhs<1 ){
-		mexErrMsgTxt("Dispsor_llin4_2d insufficient number of outputs. Outputs from this function is 'dU'");
+		mexErrMsgTxt("Disp_sor_llin4_2d insufficient number of outputs. Outputs from this function is 'dU'");
 	}else{
 	
 		if( (plhs[0] = mxCreateNumericArray(dU_out.ndims,dU_out.dimElems, mxSINGLE_CLASS, mxREAL))==NULL )
-			mexErrMsgTxt("Dispsor_llin4_2d: error reserving space for output variable 'dU_out'");
+			mexErrMsgTxt("Disp_sor_llin4_2d: error reserving space for output variable 'dU_out'");
 		if( (dU_out.data = (float *)mxGetPr( plhs[0] ))==NULL )
-			mexErrMsgTxt("Dispsor_llin4_2d: error obtaining pointer to output variable 'dU_out'");
+			mexErrMsgTxt("Disp_sor_llin4_2d: error obtaining pointer to output variable 'dU_out'");
 	}
 
 	if( nlhs>=2 )
@@ -254,9 +254,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 		RU.dimElems = U_in.dimElems;
 
 		if( (plhs[1] = mxCreateNumericArray(RU.ndims,RU.dimElems, mxSINGLE_CLASS, mxREAL))==NULL )
-			mexErrMsgTxt("Dispsor_llin4_2d: error reserving space for output variable 'RU'");
+			mexErrMsgTxt("Disp_sor_llin4_2d: error reserving space for output variable 'RU'");
 		if( (RU.data = (float *)mxGetPr( plhs[1] ))==NULL )
-			mexErrMsgTxt("Dispsor_llin4_2d: error obtaining pointer to output variable 'RU'");
+			mexErrMsgTxt("Disp_sor_llin4_2d: error obtaining pointer to output variable 'RU'");
 	}
 
 	/*Choose solver*/
@@ -269,7 +269,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,const mxArray *prhs[])
 			solveME = &GS_ALR_SOR_llin4_2d;
 			break;
 		default:
-			mexErrMsgTxt("Dispsor_llin4_2d: no such solver");
+			mexErrMsgTxt("Disp_sor_llin4_2d: no such solver");
 	}
 
 	/*Call solver*/		

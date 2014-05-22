@@ -106,7 +106,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* Check for proper number of arguments. */
 	if (nrhs != 14) {
-		mexErrMsgTxt("opsor_elin_2d parameter error: wrong number of input parameters!");
+		mexErrMsgTxt("Oflow_sor_elin4_2d parameter error: wrong number of input parameters!");
 	} 
 	/*
 	//------------
@@ -115,7 +115,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* U_in must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[0])){
-		mexErrMsgTxt("opsor_elin_2d error: 'U_in' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d error: 'U_in' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	U_in.ndims = mxGetNumberOfDimensions(prhs[0]);
@@ -128,7 +128,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* V_in must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[1])){
-		mexErrMsgTxt("opsor_elin_2d error: 'V_in' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'V_in' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	V_in.ndims = mxGetNumberOfDimensions(prhs[1]);
@@ -141,7 +141,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* M must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[2])){
-		mexErrMsgTxt("opsor_elin_2d error: 'M' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'M' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	M.ndims = mxGetNumberOfDimensions(prhs[2]);
@@ -154,7 +154,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* Cu must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[3])){
-		mexErrMsgTxt("opsor_elin_2d error: 'Cu' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'Cu' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	Cu.ndims = mxGetNumberOfDimensions(prhs[3]);
@@ -167,7 +167,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* Cv must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[4])){
-		mexErrMsgTxt("opsor_elin_2d error: 'Cv' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'Cv' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	Cv.ndims = mxGetNumberOfDimensions(prhs[4]);
@@ -180,7 +180,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* Du must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[5])){
-		mexErrMsgTxt("opsor_elin_2d error: 'Du' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'Du' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	Du.ndims = mxGetNumberOfDimensions(prhs[5]);
@@ -193,7 +193,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* Dv must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[6])){
-		mexErrMsgTxt("opsor_elin_2d error: 'Dv' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'Dv' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	Dv.ndims = mxGetNumberOfDimensions(prhs[6]);
@@ -206,7 +206,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* wW must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[7])){
-		mexErrMsgTxt("opsor_elin_2d error: 'wW' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'wW' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	wW.ndims = mxGetNumberOfDimensions(prhs[7]);
@@ -219,7 +219,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* wN must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[8])){
-		mexErrMsgTxt("opsor_elin_2d error: 'wN' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'wN' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	wN.ndims = mxGetNumberOfDimensions(prhs[8]);
@@ -232,7 +232,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* wE must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[9])){
-		mexErrMsgTxt("opsor_elin_2d error: 'wE' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'wE' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	wE.ndims = mxGetNumberOfDimensions(prhs[9]);
@@ -245,7 +245,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* wS must be a noncomplex matrix. */
 	if (!mxIsSingle(prhs[10])){
-		mexErrMsgTxt("opsor_elin_2d error: 'wS' must be a noncomplex single-valued matrix.");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'wS' must be a noncomplex single-valued matrix.");
 	}
 	/*Get number of dimensions and elements per dimension */
 	wS.ndims = mxGetNumberOfDimensions(prhs[10]);
@@ -258,7 +258,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* iter must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[11])){
-		mexErrMsgTxt("opsor_elin_2d error: 'iter' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'iter' must be a noncomplex, single-type scalar");
 	}
 	Mparam.iter = *((float*)mxGetPr( prhs[11] ) );
 	/*
@@ -268,7 +268,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* iter must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[12])){
-		mexErrMsgTxt("opsor_elin_2d error: 'omega' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'omega' must be a noncomplex, single-type scalar");
 	}
 	Mparam.omega = *((float*)mxGetPr( prhs[12] ) );
 	/*
@@ -278,7 +278,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	*/
 	/* iter must be a noncomplex scalar. */
 	if (!mxIsSingle(prhs[13])){
-		mexErrMsgTxt("opsor_elin_2d error: 'solver' must be a noncomplex, single-type scalar");
+		mexErrMsgTxt("Oflow_sor_elin4_2d: 'solver' must be a noncomplex, single-type scalar");
 	}
 	solver = (int)*((float*)mxGetPr( prhs[13] ) );
 		
@@ -293,18 +293,18 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 	V_out.dimElems = V_in.dimElems;
 	
 	if( nlhs<2 ){
-		mexErrMsgTxt("opsor_elin_2d insufficient number of outputs. Outputs from this function are 'U' and 'V'");
+		mexErrMsgTxt("Oflow_sor_elin4_2d insufficient number of outputs. Outputs from this function are 'U' and 'V'");
 	}
 	else{
 		if( (plhs[0] = mxCreateNumericArray(U_out.ndims, V_out.dimElems, mxSINGLE_CLASS, mxREAL))==NULL )
-			mexErrMsgTxt("opsor_elin_2d: error reserving space for output variable 'U_out'");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: error reserving space for output variable 'U_out'");
 		if( (U_out.data = (float*)mxGetPr( plhs[0] ))==NULL )
-			mexErrMsgTxt("opsor_elin_2d: error obtaining pointer to output variable 'U_out'");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: error obtaining pointer to output variable 'U_out'");
 	
 		if( (plhs[1] = mxCreateNumericArray(V_out.ndims, V_out.dimElems, mxSINGLE_CLASS, mxREAL))==NULL )
-			mexErrMsgTxt("opsor_elin_2d: error reserving space for output variable 'V_out'");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: error reserving space for output variable 'V_out'");
 		if( (V_out.data = (float*)mxGetPr( plhs[1] ))==NULL )
-			mexErrMsgTxt("opsor_elin_2d: error obtaining pointer to output variable 'V_out'");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: error obtaining pointer to output variable 'V_out'");
 	}
 	if( nlhs>=4 )
 	{
@@ -314,14 +314,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 		RV.dimElems = M.dimElems;
 
 		if( (plhs[2] = mxCreateNumericArray(RU.ndims, RU.dimElems, mxSINGLE_CLASS, mxREAL))==NULL )
-			mexErrMsgTxt("opsor_elin_2d: error reserving space for output variable 'RU'");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: error reserving space for output variable 'RU'");
 		if( (RU.data = (float*)mxGetPr( plhs[2] ))==NULL )
-			mexErrMsgTxt("opsor_elin_2d: error obtaining pointer to output variable 'RU'");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: error obtaining pointer to output variable 'RU'");
 	
 		if( (plhs[3] = mxCreateNumericArray(RV.ndims, RV.dimElems, mxSINGLE_CLASS, mxREAL))==NULL )
-			mexErrMsgTxt("opsor_elin_2d: error reserving space for output variable 'RV'");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: error reserving space for output variable 'RV'");
 		if( (RV.data = (float*)mxGetPr( plhs[3] ))==NULL )
-			mexErrMsgTxt("opsor_elin_2d: error obtaining pointer to output variable 'RV'");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: error obtaining pointer to output variable 'RV'");
 	}
 	
 	/*Choose solver*/
@@ -334,7 +334,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
 			solveME = &GS_ALR_SOR_elin4_2d;
 			break;
 		default:
-			mexErrMsgTxt("opsor_elin4_2d: no such solver");
+			mexErrMsgTxt("Oflow_sor_elin4_2d: no such solver");
 	}
 		
 	/*Call solver*/		
