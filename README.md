@@ -7,6 +7,13 @@ discretized and solved efficiently. The thesis is available from http://www.jarn
 understand how the models work, I suggest that you take a look there. I have also included tutorials and other
 material related to PDE based image processing at my site.
 
+###1.1 REQUIREMENTS
+You need Matlab with a C-compiler. Some of the functions are written as MEX (Matlab EXecutable), in C-programming language.
+If you have problems compiling the functions, send me a message and I will try to sort out the problem. Personally I use
+Linux and gcc-compilers, but with the help of some friends now the MEX-functions should compile in Windows as well. Unless 
+you already have setup mex in Matlab you might need to execute
+>mex -setup
+
 ##2 ABOUT THE FUNCTIONS
 
 You can execute all the examples by running
@@ -17,13 +24,14 @@ There are several different optical flow functions based on different mathematic
 
   1. Horn&Schunck
   2. Late linearization with image warping
-  2. Early linearization (without image warping)
+  3. Early linearization (without image warping)
+  4. Early linearization with full multigrid
 
 ###2.2 STEREO DISPARITY
 There are several different functions for calculating stereo disparity maps with different constraints, for example:
 
   1. Late linearization with image warping
-  2. Symmetric flow
+  2. Symmetric flow (imposes a symmetry constraint)
 
 ###2.3 SEGMENTATION BASED ON DYNAMIC IMPLICIT SURFACES
 I have included two different functions for segmenting stereo disparity maps (sparse and dense maps) based on dynamic

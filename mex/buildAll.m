@@ -1,4 +1,5 @@
-%Compilation is only tested on Linux and will most probably not work in Windows until the file separator etc. issues are fixed
+%In order to compile the MEX-files you need Matlab with a C-compiler.
+%Tested using Linux with a gcc-compiler and also should compile in Windows as well.
 
 %Compile optical flow related functions
 mex -I./source/library ./source/Oflow_lhs_elin4_2d.c ./source/library/opticalflowSolvers.c -outdir ./build
