@@ -13,7 +13,7 @@ run('./mex/buildAll.m');
 %- Tsukuba -
 %------------
 disp('DISPARITY EXAMPLES')
-disp('Processing Tsukuba, late linearization with warping...')
+disp('Processing Tsukuba, late linearization...')
 I_l_tsukuba = imread('tsukuba_left.png');
 I_r_tsukuba = imread('tsukuba_right.png');
 %Typical disparity
@@ -24,7 +24,7 @@ subplot(2,2,2), imagesc( I_r_tsukuba ), axis off, title('Tsukuba, right')
 subplot(2,2,3), imagesc( D_tsukuba ), axis off, title('Disparity')
 drawnow
 %Symmetric disparity
-disp('Processing Tsukuba, late linearization with warping imposing symmetry')
+disp('Processing Tsukuba, late linearization with symmetry term...')
 D_tsukuba_sym = DispEminND_llin_sym_2D( I_l_tsukuba, I_r_tsukuba, 'grad', 'gradmag' );
 figure
 subplot(2,2,1), imagesc( I_l_tsukuba ), axis off, title('Tsukuba, left')
@@ -37,17 +37,37 @@ drawnow
 %- Urban3 -
 %----------
 disp('PROCESSING OPTICAL FLOW')
-disp('Processing Urban3, late linearization with warping...')
 I_7_urban3 = imread('Urban3_frame07.png');
 I_8_urban3 = imread('Urban3_frame08.png');
-%Optical flow, late linearization with warping
-[U_urban3 V_urban3] = FlowEminND_llin_2D_v10( cat(3,I_7_urban3,I_8_urban3), 3, 'grad', 'gradmag' );
-OFC_urban3 = flow2color( cat(3, U_urban3, V_urban3 ), 'border', 10 );
+%Optical flow, late linearization with nonlinear diffusion
+disp('Processing Urban3, late linearization with nonlinear diffusion...')
+[U_urban3_nd V_urban3_nd] = FlowEminND_llin_2D_v10( cat(3,I_7_urban3,I_8_urban3), 3, 'grad', 'gradmag' );
+OFC_urban3_nd = flow2color( cat(3, U_urban3_nd, V_urban3_nd ), 'border', 10 );
 figure
 subplot(2,2,1), imagesc( I_7_urban3 ), axis off, title('Urban 3, frame 7')
 subplot(2,2,2), imagesc( I_8_urban3 ), axis off, title('Urban 3, frame 8')
-subplot(2,2,3), imagesc( sqrt(U_urban3.^2 + V_urban3.^2) ), axis off, title('Late linearization, velocity')
-subplot(2,2,4), imagesc( OFC_urban3 ), axis off, title('Late linearization, color codified flow')
+subplot(2,2,3), imagesc( sqrt(U_urban3_nd.^2 + V_urban3_nd.^2) ), axis off, title('Late lin. nlinear diffusion')
+subplot(2,2,4), imagesc( OFC_urban3_nd ), axis off, title('Late lin. nlinear diffusion')
+drawnow
+%Optical flow, late linearization with anisotropic diffusion based on flow
+disp('Processing Urban3, late linearization with anisotropic diffusion...')
+[U_urban3_adf V_urban3_adf] = FlowEminAD_llin_2D_v10( cat(3,I_7_urban3,I_8_urban3), 3, 'grad', 'gradmag', 'diffusion', 'flow' );
+OFC_urban3_adf = flow2color( cat(3, U_urban3_adf, V_urban3_adf ), 'border', 10 );
+figure
+subplot(2,2,1), imagesc( I_7_urban3 ), axis off, title('Urban 3, frame 7')
+subplot(2,2,2), imagesc( I_8_urban3 ), axis off, title('Urban 3, frame 8')
+subplot(2,2,3), imagesc( sqrt(U_urban3_adf.^2 + V_urban3_adf.^2) ), axis off, title('Llin. anisotropic diffusion (flow)')
+subplot(2,2,4), imagesc( OFC_urban3_adf ), axis off, title('Llin. anisotropic diffusion (flow)')
+drawnow
+%Optical flow, late linearization with anisotropic diffusion based on image
+disp('Processing Urban3, late linearization with anisotropic diffusion...')
+[U_urban3_adi V_urban3_adi] = FlowEminAD_llin_2D_v10( cat(3,I_7_urban3,I_8_urban3), 3, 'grad', 'gradmag', 'diffusion', 'image' );
+OFC_urban3_adi = flow2color( cat(3, U_urban3_adi, V_urban3_adi ), 'border', 10 );
+figure
+subplot(2,2,1), imagesc( I_7_urban3 ), axis off, title('Urban 3, frame 7')
+subplot(2,2,2), imagesc( I_8_urban3 ), axis off, title('Urban 3, frame 8')
+subplot(2,2,3), imagesc( sqrt(U_urban3_adi.^2 + V_urban3_adi.^2) ), axis off, title('Llin. anisotropic diffusion (image)')
+subplot(2,2,4), imagesc( OFC_urban3_adi ), axis off, title('Llin. anisotropic diffusion (image)')
 drawnow
 %Horn&Schunck
 disp('Processing Urban3, Horn&Schunck...')
@@ -86,8 +106,8 @@ OFC_beanbags = flow2color( cat(3, U_beanbags, V_beanbags ), 'border', 10 );
 figure
 subplot(2,2,1), imagesc( I_10_beanbags ), axis off, title('Beanbags, frame 10')
 subplot(2,2,2), imagesc( I_11_beanbags ), axis off, title('Beanbags, frame 11')
-subplot(2,2,3), imagesc( sqrt(U_beanbags.^2 + V_beanbags.^2) ), axis off, title('Late linearization, velocity')
-subplot(2,2,4), imagesc( OFC_beanbags ), axis off, title('Late linearization, color codified flow')
+subplot(2,2,3), imagesc( sqrt(U_beanbags.^2 + V_beanbags.^2) ), axis off, title('Late lin. nlinear diffusion')
+subplot(2,2,4), imagesc( OFC_beanbags ), axis off, title('Late lin. nlinear diffusion')
 drawnow
 
 %-------------------

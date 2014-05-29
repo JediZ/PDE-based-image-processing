@@ -26,6 +26,7 @@ There are several different optical flow functions based on different mathematic
   2. Late linearization with image warping
   3. Early linearization (without image warping)
   4. Early linearization with full multigrid
+  5. Late linearization with anisotropic regularization (diffusion) term
 
 ###2.2 STEREO DISPARITY
 There are several different functions for calculating stereo disparity maps with different constraints, for example:

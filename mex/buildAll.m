@@ -6,6 +6,7 @@ mex -I./source/library ./source/Oflow_lhs_elin4_2d.c ./source/library/opticalflo
 mex -I./source/library ./source/Oflow_lhs_llin4_2d.c ./source/library/opticalflowSolvers.c -outdir ./build
 mex -I./source/library ./source/Oflow_sor_elin4_2d.c ./source/library/opticalflowSolvers.c -outdir ./build
 mex -I./source/library ./source/Oflow_sor_llin4_2d.c ./source/library/opticalflowSolvers.c -outdir ./build
+mex -I./source/library ./source/Oflow_sor_llin8_2d.c ./source/library/opticalflowSolvers.c -outdir ./build
 
 %Compile disparity related functions
 mex -I./source/library ./source/Disp_sor_llin4_2d.c ./source/library/disparitySolvers.c -outdir ./build

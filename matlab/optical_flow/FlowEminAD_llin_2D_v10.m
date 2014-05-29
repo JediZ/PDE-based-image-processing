@@ -1,12 +1,14 @@
-function [U V varargout] = FlowEminND_llin_2D(Iin, channels, fstTerm, sndTerm, varargin)
-%function [U V] = FlowEminND_llin_2D(Iin, channels, fstTerm, sndTerm, varargin)
+function [U V varargout] = FlowEminAD_llin_2D(Iin, channels, fstTerm, sndTerm, varargin)
+%function [U V] = FlowEminAD_llin_2D(Iin, channels, fstTerm, sndTerm, varargin)
+%
+%Implements late linearisation optical flow calculation with anisotropic diffusion based either on flow or image.
 %
 %FlowEminX_Y_Z
 %	X	=	HS/ND/AD (Horn&Schunk/nonlinear diffusion/anisotropic diffusion)
 %	Y	=	elin/llin/ (early/late linearization) sym (symmetrical)
 %	Z	=	2D/3D (2D or 3D smoothness constraint)
 %
-%EXAMPLE: FlowEminND_llin_2D( Iseq, 3, 'grad', 'gradmag', 'alpha', 0.05 );
+%EXAMPLE: FlowEminAD_llin_2D( Iseq, 3, 'grad', 'gradmag', 'alpha', 0.05 );
 %
 %Uses functions medfilt2 and imresize from Matlab Image Processing Toolbox
 %
@@ -50,6 +52,8 @@ function [U V varargout] = FlowEminND_llin_2D(Iin, channels, fstTerm, sndTerm, v
 %------------------------
 % Get and set parameters
 %------------------------
+param.quantile		= 0.9;			%Quantile used for determining strength of edges used for controlling diffusion
+param.diffusion 	= 'image';		%Diffusion based on 'image' or 'flow'
 param.alpha 		= 0.0420;		%Smoothness weight (diffusion coefficient)
 param.omega 		= 1.9;			%Relaxation parameter for SOR
 param.gammaS 		= 0.01;			%Spatial apriori weight.
@@ -203,6 +207,18 @@ for scl=param.scales:-1:1
 	I1t1w = [];
 	I2t1w = [];
 
+	%-------------------
+	% Diffusion weights
+	%-------------------
+	switch lower(param.diffusion)
+		case 'image'
+			[wW wNW wN wNE wE wSE wS wSW] = ADdiffWeights( It0{scl}, param.quantile );
+		case 'flow'
+			%Do nothing
+		otherwise
+			error('No such diffusion method!')
+	end
+
 	%--------------------------------
 	% Initial guess is "zero flow"
 	%--------------------------------
@@ -318,7 +334,14 @@ for scl=param.scales:-1:1
 			%-------------------
 			% Diffusion weights
 			%-------------------
-			[wW wN wS wE] = OPdiffWeights( U+dU, V+dV );
+			switch lower(param.diffusion)
+				case 'image'
+					%Do nothing
+				case 'flow'
+					[wW wNW wN wNE wE wSE wS wSW] = ADdiffWeights( U+dU+V+dV, param.quantile );
+				otherwise
+					error('No such diffusion method!')
+			end
 
 			MGd = nansum( cat(3, M1.*gD1, M2.*gD2), 3);
 			CuGd = nansum( cat(3,Cu1.*gD1, Cu2.*gD2, ASCu.*gSu),3 );
@@ -329,7 +352,7 @@ for scl=param.scales:-1:1
 			%--------
 			% Solver
 			%--------
-			[dU dV] = Oflow_sor_llin4_2d(	single(U), ...
+			[dU dV] = Oflow_sor_llin8_2d(	single(U), ...
 							single(V), ...
 							single(dU), ...
 							single(dV), ...
@@ -339,9 +362,13 @@ for scl=param.scales:-1:1
 							single(DuGd), ...
 							single(DvGd), ...
 							single(wW), ...
+							single(wNW), ...
 							single(wN), ...
+							single(wNE), ...
 							single(wE), ...
+							single(wSE), ...
 							single(wS), ...
+							single(wSW), ...
 							single(param.iter), ...
 							single(param.omega), ...
 							single(param.solver) ...
@@ -383,51 +410,79 @@ function OUT=rgb2grad( IN )
 	    OUT(:,:,i*2) = imfilter( IN(:,:,i), Ody, 'replicate' );
 	end
 
-%--------------------------------------------------
-%--- OPdiffWeights: optical-flow diffusion weights
-%--------------------------------------------------
-function [wW wN wS wE] = OPdiffWeights(U, V)
-%function [wW wN wS wE] = OPdiffWeights(U, V)
+%----------------------------------
+%--- Anisotropic diffusion weights
+%----------------------------------
+function [W NW N NE E SE S SW] = ADdiffWeights(D, quantile)
+%function [W NW N NE E SE S SW] = ADdiffWeights(D, quantile)
 %
-%Optical-flow diffusion weights
+%Calculates anisotropic diffusion weights between pixels. 
+%Quantile controls the strength of edges that are considered important. Value should be between 0 and 1.
 %
-%Approximates "diffusion" weights between pixels. 
-%
-%INPUT
-%
-%OUTPUT
-%wW			=		Western diffusitivity weights.
-%wN			=		Northern diffusitivity weights.
-%wS			=		Southern diffusitivity weights.
-%wE			=		Eastern diffusitivity weights.
-%
-%PARAMETERS
-%
-%
-%Implementation of 6-point discretization based on PhD thesis:
-%"From Pixels to Regions", Thomas Brox, 2005.
-%
-%Author: Jarno Ralli
-%E-mail: jarno@ralli.fi
+%Diffusion tensor is based on the following equation:
+%T(dI) = 1/(||dI||^2+2*lambda^2)    *   [ ( (dI/dy)^2 + lambda^2 )  -( dI/dx*dI/dy );
+%                                        -( dI/dx*dI/dy )            ( (dI/dx)^2 + lambda^2 )]
+%where the output is marked as:
+%T(dI) = [dyy -dxy;-dxy dxx]
 
-[rows cols frames] = size(U);
+%--------------------
+% Derivation kernels 
+%--------------------
+%Alvarez derivative operators
+O_dx =[ 1           0   -1;
+	sqrt(2)     0   -sqrt(2);
+	1           0   -1]./(4+sqrt(8));
+O_dy =[	1   sqrt(2)     1;
+	0   0           0;
+	-1   -sqrt(2)     -1]./(4+sqrt(8));
 
-%Cast to double. Depending on the version of Matlab, single-float can cause problems
-U = double(U);
-V = double(V);
+D = double(D);
 
-%Spatial differences
-Uver = imfilter(U,[0.25 0 -0.25]','replicate');
-Vver = imfilter(V,[0.25 0 -0.25]','replicate');
-Uhor = imfilter(U,[0.25 0 -0.25],'replicate');
-Vhor = imfilter(V,[0.25 0 -0.25],'replicate');
+[rows cols frames] = size(D);
 
-wW = (circshift(U,[0 1 0])-U).^2 + (Uver+circshift(Uver,[0 1 0])).^2 + (circshift(V,[0 1 0])-V).^2 + (Vver+circshift(Vver,[0 1 0])).^2;
-wE = (circshift(U,[0 -1 0])-U).^2 + (Uver+circshift(Uver,[0 -1 0])).^2 + (circshift(V,[0 -1 0])-V).^2 + (Vver+circshift(Vver,[0 -1 0])).^2;
-wN = (circshift(U,[1 0 0])-U).^2 + (Uhor+circshift(Uhor,[1 0 0])).^2 + (circshift(V,[1 0 0])-V).^2 + (Vhor+circshift(Vhor,[1 0 0])).^2;
-wS = (circshift(U,[-1 0 0])-U).^2 + (Uhor+circshift(Uhor,[-1 0 0])).^2 + (circshift(V,[-1 0 0])-V).^2 + (Vhor+circshift(Vhor,[-1 0 0])).^2;
+%Calculate derivatives
+Dx = imfilter( D, O_dx, 'replicate', 'conv' );
+Dy = imfilter( D, O_dy, 'replicate', 'conv' );
 
-wW = 1./sqrt( wW + 0.00001 );
-wE = 1./sqrt( wE + 0.00001 );
-wN = 1./sqrt( wN + 0.00001 );
-wS = 1./sqrt( wS + 0.00001 );
+if frames>1
+	%Calculate gradient norm
+	[Mval Mind] = max( (Dx.^2 + Dy.^2), [], 3 );
+	[X Y] = meshgrid( 1:cols, 1:rows );
+	indices_from = sub2ind( [rows cols frames], Y, X, Mind );
+		
+	maxDx = Dx(indices_from);
+	maxDy = Dy(indices_from);
+else
+	maxDx = Dx;
+	maxDy = Dy;
+end
+	
+normDxDy = maxDx.^2 + maxDy.^2;
+
+%Choose lambda adaptively
+normDxDy_sorted = normDxDy(:);
+normDxDy_sorted(normDxDy_sorted==0) = [];
+normDxDy_sorted = sort( normDxDy_sorted );
+
+if ~isempty(normDxDy_sorted)
+	lambda = normDxDy_sorted( round(numel(normDxDy_sorted)*quantile) );
+else
+	lambda = 1;
+end
+
+%Multiplicator
+multip = 1./( (normDxDy) + 2*lambda );
+%Diffusion tensor components
+dyy = multip.*( maxDy.^2 + lambda );
+dxx = multip.*( maxDx.^2 + lambda );
+dxy = -multip.*( maxDx.*maxDy );
+
+W =	0.5*(	dyy + circshift(dyy,[0 1]) );
+NW =	0.25*(	dxy + circshift(dxy,[1 1]) );
+N =	0.5*(	dxx + circshift(dxx,[1 0]) );
+NE =	-0.25*(	dxy + circshift(dxy,[1 -1]) );
+E =	0.5*(	dyy + circshift(dyy,[0 -1]) );
+SE =	0.25*(	dxy + circshift(dxy,[-1 -1]) );
+S =	0.5*(	dxx + circshift(dxx,[-1 0]) );
+SW =	-0.25*(	dxy + circshift(dxy,[-1 1]) );
+
